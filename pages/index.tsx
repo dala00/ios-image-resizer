@@ -39,7 +39,7 @@ export default function Home() {
     const url = window.URL.createObjectURL(response.data)
     const link = document.createElement('a')
     link.href = url
-    link.setAttribute('download', 'file.zip')
+    link.setAttribute('download', file.name.replace(/\.[^\.]+$/, '.zip'))
     document.body.appendChild(link)
     link.click()
   }
