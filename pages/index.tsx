@@ -1,65 +1,57 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { ChangeEvent, useState } from 'react'
+import axios from 'axios'
 
 export default function Home() {
+  const [file, setFile] = useState(null as File | null)
+
+  function onFileChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files.length > 0) {
+      setFile(e.target.files[0])
+    } else {
+      setFile(null)
+    }
+  }
+
+  async function resize() {
+    if (file === null) {
+      return
+    }
+
+    const params = new FormData()
+    params.append('image', file)
+
+    const response = await axios
+      .post('/api/hello', params, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .catch((error) => {
+        console.error(error)
+        return null
+      })
+    if (response === null) {
+      return
+    }
+    console.log(response)
+  }
+
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+      <main>
+        <input type="file" onChange={onFileChange}></input>
+        <button type="button" onClick={() => resize()}>
+          Submit
+        </button>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      <footer>aaa</footer>
     </div>
   )
 }
