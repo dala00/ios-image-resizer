@@ -22,7 +22,8 @@ export default function Home() {
     params.append('image', file)
 
     const response = await axios
-      .post('/api/hello', params, {
+      .post('/api/resize', params, {
+        responseType: 'blob',
         headers: {
           'content-type': 'multipart/form-data',
         },
@@ -34,7 +35,13 @@ export default function Home() {
     if (response === null) {
       return
     }
-    console.log(response)
+
+    const url = window.URL.createObjectURL(response.data)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'file.zip')
+    document.body.appendChild(link)
+    link.click()
   }
 
   return (
